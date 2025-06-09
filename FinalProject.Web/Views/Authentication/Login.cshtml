@@ -1,6 +1,6 @@
 @model FinalProject.Web.Models.ViewModels.Authentication.Login.LoginViewModel
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Вход";
 }
 
 <div class="container mt-5">
@@ -8,24 +8,24 @@
         <div class="col-md-6">
             <div class="card shadow-lg border-0 rounded-lg">
                 <div class="card-header bg-primary text-white text-center py-4">
-                    <h3 class="mb-0">Welcome Back!</h3>
+                    <h3 class="mb-0">Добре дошли!</h3>
                 </div>
                 <div class="card-body p-5">
                     <div class="text-center mb-2">
-                        <p class="text-muted">Please sign in to your account</p>
+                        <p class="text-muted">Моля, влезте в своя акаунт</p>
                     </div>
 
                     <form asp-controller="Authentication" asp-action="Login" method="post">
                         <div class="form-floating mb-4">
                             <input asp-for="Username" type="text" class="form-control" id="username"
-                                placeholder="Username" asp-for="Username" value="@Model.Username">
-                            <label asp-for="Username">Username</label>
+                                placeholder="Потребителско име" asp-for="Username" value="@Model.Username">
+                            <label asp-for="Username">Потребителско име</label>
                         </div>
 
                         <div class="form-floating mb-4">
                             <input asp-for="Password" type="password" class="form-control" id="password"
-                                placeholder="Password" asp-for="Password" value="@Model.Password">
-                            <label asp-for="Password">Password</label>
+                                placeholder="Парола" asp-for="Password" value="@Model.Password">
+                            <label asp-for="Password">Парола</label>
                         </div>
 
                         <input type="hidden" asp-for="ReturnUrl" />
@@ -48,15 +48,15 @@
 
                         <div class="d-grid mb-4">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                <i class="fas fa-sign-in-alt me-2"></i>Вход
                             </button>
                         </div>
 
                         <div class="text-center">
                             <p class="mb-0">
-                                <span class="text-muted">Don't have an account?</span>
+                                <span class="text-muted">Нямате акаунт?</span>
                                 <a asp-controller="Authentication" asp-action="Register"
-                                    class="text-primary fw-bold text-decoration-none">Register now</a>
+                                    class="text-primary fw-bold text-decoration-none">Регистрирайте се</a>
                             </p>
                         </div>
                     </form>
@@ -65,3 +65,9 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

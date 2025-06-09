@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Online Payment System</title>
+    <title>@ViewData["Title"] - Банкова система</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -17,8 +17,8 @@
         <nav class="navbar navbar-expand-sm navbar-dark">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-rocket me-2"></i>
-                    <span class="fw-bold">Online Payment System</span>
+                    <i class="fas fa-university me-2"></i>
+                    <span class="fw-bold">Банкова система</span>
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -31,14 +31,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
                                 asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home me-1"></i>Home
+                                <i class="fas fa-home me-1"></i>Начало
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payment" ? "active" : "")"
                                 asp-area="" asp-controller="Payment" asp-action="Index">
-                                <i class="fas fa-tasks me-1"></i>Payments
+                                <i class="fas fa-money-bill-wave me-1"></i>Плащания
                             </a>
                         </li>
                     </ul>
@@ -66,13 +66,13 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white btn-auth" asp-area="" asp-controller="Authentication"
                                     asp-action="Login">
-                                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                                    <i class="fas fa-sign-in-alt me-1"></i>Вход
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white btn-auth" asp-area="" asp-controller="Authentication"
                                     asp-action="Register">
-                                    <i class="fas fa-user-plus me-1"></i>Register
+                                    <i class="fas fa-user-plus me-1"></i>Регистрация
                                 </a>
                             </li>
                         }
@@ -93,8 +93,8 @@
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start">
                     <span>
-                        <i class="fas fa-rocket me-1"></i>
-                        &copy; @DateTime.Now.Year Online Payment System. All rights reserved.
+                        <i class="fas fa-university me-1"></i>
+                        &copy; @DateTime.Now.Year Банкова система. Всички права запазени.
                     </span>
                 </div>
                 <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">

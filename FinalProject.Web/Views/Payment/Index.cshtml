@@ -1,6 +1,6 @@
 @model FinalProject.Web.Models.ViewModels.Payment.Index.IndexPaymentViewModel
 @{
-    ViewData["Title"] = "Payments";
+    ViewData["Title"] = "Плащания";
 }
 
 <div class="container">
@@ -10,22 +10,22 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h1 class="text-gradient mb-2">Payment History</h1>
-                            <p class="lead text-muted mb-0">View and manage your payment transactions</p>
+                            <h1 class="text-gradient mb-2">История на плащанията</h1>
+                            <p class="lead text-muted mb-0">Преглед и управление на вашите транзакции</p>
                         </div>
                         <div class="d-flex gap-3">
                             <a href="@Url.Action("Create", "Payment")" class="btn btn-primary">
                                 <i class="fas fa-plus me-2"></i>
-                                New Payment
+                                Ново плащане
                             </a>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-outline-primary" id="sortByDate">
                                     <i class="fas fa-clock me-2"></i>
-                                    Sort by Date
+                                    Сортирай по дата
                                 </button>
                                 <button type="button" class="btn btn-outline-primary" id="sortByStatus">
                                     <i class="fas fa-sort me-2"></i>
-                                    Sort by Status
+                                    Сортирай по статус
                                 </button>
                             </div>
                         </div>
@@ -35,11 +35,11 @@
                     {
                         <div class="text-center py-5">
                             <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
-                            <h3 class="text-muted">No Payments Found</h3>
-                            <p class="text-muted">You haven't made any payments yet.</p>
+                            <h3 class="text-muted">Няма намерени плащания</h3>
+                            <p class="text-muted">Все още не сте направили никакви плащания.</p>
                             <a href="@Url.Action("Create", "Payment")" class="btn btn-primary mt-3">
                                 <i class="fas fa-plus me-2"></i>
-                                Make Your First Payment
+                                Направете първото си плащане
                             </a>
                         </div>
                     }
@@ -56,7 +56,7 @@
                                                     <div class="payment-status">
                                                         <span class="badge @GetStatusBadgeClass(payment.Status) px-3 py-2">
                                                             <i class="@GetStatusIcon(payment.Status) me-1"></i>
-                                                            @payment.Status
+                                                            @GetStatusText(payment.Status)
                                                         </span>
                                                     </div>
                                                     <div class="payment-info">
@@ -86,7 +86,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1 ms-3">
-                                                        <div class="text-muted small">From Account</div>
+                                                        <div class="text-muted small">От сметка</div>
                                                         <div class="fw-bold">@payment.FromAccountNumber</div>
                                                     </div>
                                                 </div>
@@ -97,7 +97,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1 ms-3">
-                                                        <div class="text-muted small">To Account</div>
+                                                        <div class="text-muted small">Към сметка</div>
                                                         <div class="fw-bold">@payment.ToAccountNumber</div>
                                                     </div>
                                                 </div>
@@ -111,19 +111,18 @@
                                                         asp-route-id="@payment.Id" method="post">
                                                         <input type="hidden" name="paymentId" value="@payment.Id" />
 
-                                                        <button class="btn btn-success" type="submit">
+                                                        <button class="btn btn-success" onclick="processPayment(@payment.Id)">
                                                             <i class="fas fa-check me-2"></i>
-                                                            Process Payment
+                                                            Обработи плащането
                                                         </button>
                                                     </form>
-
                                                     <form asp-action="CancelPayment" asp-controller="Payment"
                                                         asp-route-id="@payment.Id" method="post">
                                                         <input type="hidden" name="paymentId" value="@payment.Id" />
 
-                                                        <button class="btn btn-outline-danger" type="submit">
+                                                        <button class="btn btn-outline-danger" onclick="cancelPayment(@payment.Id)">
                                                             <i class="fas fa-times me-2"></i>
-                                                            Cancel Payment
+                                                            Откажи плащането
                                                         </button>
                                                     </form>
                                                 </div>
@@ -157,8 +156,8 @@
                     const statusA = a.querySelector('.badge').textContent.trim();
                     const statusB = b.querySelector('.badge').textContent.trim();
 
-                    if (statusA === 'PENDING' && statusB !== 'PENDING') return -1;
-                    if (statusA !== 'PENDING' && statusB === 'PENDING') return 1;
+                    if (statusA === 'Чакащо' && statusB !== 'Чакащо') return -1;
+                    if (statusA !== 'Чакащо' && statusB === 'Чакащо') return 1;
 
                     // If both are PENDING or both are not PENDING, sort by date
                     const dateA = new Date(a.querySelector('.payment-date').textContent);
@@ -217,6 +216,17 @@
             FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.COMPLETED => "fas fa-check-circle",
             FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.CANCELLED => "fas fa-times-circle",
             _ => "fas fa-question-circle"
+        };
+    }
+
+    private string GetStatusText(FinalProject.Web.Models.ViewModels.Payment.PaymentStatus status)
+    {
+        return status switch
+        {
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PENDING => "Чакащо",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.COMPLETED => "Завършено",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.CANCELLED => "Неуспешно",
+            _ => "Неизвестен"
         };
     }
 }

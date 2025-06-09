@@ -1,98 +1,169 @@
 ﻿@model FinalProject.Web.Models.ViewModels.Home.Index.IndexHomeViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Начало";
 }
 
 <div class="container">
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="text-gradient mb-4">Your Accounts</h1>
-            <p class="lead text-muted">Manage your accounts and view your balances</p>
-        </div>
-    </div>
-
-    <div class="row">
-        @if (!Model.Accounts.Any())
-        {
-            <div class="col-12">
-                <div class="card shadow-soft">
-                    <div class="card-body text-center py-5">
-                        <i class="fas fa-wallet fa-3x text-muted mb-3"></i>
-                        <h3 class="text-muted">No Accounts Found</h3>
-                        <p class="text-muted">You don't have any accounts associated with your profile.</p>
+            <div class="card shadow-soft border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="text-gradient mb-2">Вашите сметки</h1>
+                            <p class="lead text-muted mb-0">Преглед и управление на вашите банкови сметки</p>
+                        </div>
+                        <a href="@Url.Action("Create", "Payment")" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Ново плащане
+                        </a>
                     </div>
+
+                    @if (!Model.Accounts.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-university fa-3x text-muted mb-3"></i>
+                            <h3 class="text-muted">Няма намерени сметки</h3>
+                            <p class="text-muted">Все още нямате отворени банкови сметки.</p>
+                            <a href="@Url.Action("Contact", "Home")" class="btn btn-primary mt-3">
+                                <i class="fas fa-envelope me-2"></i>
+                                Свържете се с нас
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row g-4">
+                            @foreach (var account in Model.Accounts)
+                            {
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100 border-0 shadow-soft">
+                                        <div class="card-header bg-gradient border-0 p-0">
+                                            <div class="account-header">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="account-type">
+                                                        <span class="badge bg-primary bg-opacity-10 text-white px-3 py-2">
+                                                            <i class="fas fa-university me-1"></i>
+                                                            Банкова сметка
+                                                        </span>
+                                                    </div>
+                                                    <div class="account-info">
+                                                        <div class="account-balance">
+                                                            <span class="currency">@account.Balance.ToString("C2")</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex flex-column gap-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-shrink-0">
+                                                        <div class="account-icon bg-primary bg-opacity-10 rounded-circle p-2">
+                                                            <i class="fas fa-university text-primary"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <div class="text-muted small">IBAN</div>
+                                                        <div class="fw-bold">@account.AccountNumber</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer bg-transparent border-0 pb-4">
+                                            <div class="d-grid gap-2">
+                                                <a href="@Url.Action("Create", "Payment", new { accountId = account.Id })"
+                                                    class="btn btn-primary">
+                                                    <i class="fas fa-paper-plane me-2"></i>
+                                                    Изпрати пари
+                                                </a>
+                                                <a href="@Url.Action("Index", "Payment", new { accountId = account.Id })"
+                                                    class="btn btn-primary">
+                                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                                    Преглед на плащания
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
             </div>
-        }
-        else
-        {
-            @foreach (var account in Model.Accounts)
-            {
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card shadow-soft h-100">
-                        <div class="card-header text-white">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-university me-2"></i>
-                                Account Details
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="text-muted">Account Number:</span>
-                                <span class="fw-bold">@account.AccountNumber</span>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted">Balance:</span>
-                                <span class="fw-bold text-primary">@account.Balance.ToString("C")</span>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-top-0">
-                            <div class="d-grid gap-2">
-                                <a href="@Url.Action("Create", "Payment", new { accountId = account.Id })"
-                                    class="btn btn-primary">
-                                    <i class="fas fa-paper-plane me-2"></i>
-                                    Make Payment
-                                </a>
-                                <a href="@Url.Action("Index", "Payment", new { accountId = account.Id })"
-                                    class="btn btn-outline-primary">
-                                    <i class="fas fa-history me-2"></i>
-                                    View Transactions
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        }
+        </div>
     </div>
 </div>
 
-@section Scripts {
-    <style>
-        .text-gradient {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+<style>
+    .account-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+    .card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
-        }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    }
 
-        .btn-outline-primary {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
+    .badge {
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
 
-        .btn-outline-primary:hover {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-color: transparent;
-        }
-    </style>
-}
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    .account-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 1.5rem;
+        border-radius: 12px 12px 0 0;
+        color: white;
+    }
+
+    .account-type {
+        margin-bottom: 0;
+    }
+
+    .account-info {
+        text-align: right;
+    }
+
+    .account-balance {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .account-balance .currency {
+        font-size: 1.5rem;
+        vertical-align: top;
+        margin-right: 2px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        box-shadow: 0 4px 15px rgba(41, 98, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(41, 98, 255, 0.3);
+    }
+
+    .bg-gradient {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+</style>
