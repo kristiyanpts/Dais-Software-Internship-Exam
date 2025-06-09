@@ -111,12 +111,6 @@ namespace FinalProject.Repository.Base
             command.CommandText = QueryHelper.BuildSelectQuery(tableName, columns, parameters);
             AddParametersToCommand(command, parameters);
 
-            Console.WriteLine(command.CommandText);
-            foreach (var parameter in command.Parameters)
-            {
-                Console.WriteLine(parameter);
-            }
-
             using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {

@@ -82,7 +82,7 @@ namespace FinalProject.Web.Controllers.Authentication
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError(string.Empty, result.Message ?? "Invalid email or password");
+                ModelState.AddModelError(string.Empty, result.Message ?? "Неуспешно влизане в системата");
             }
 
             return View(model);
@@ -115,7 +115,7 @@ namespace FinalProject.Web.Controllers.Authentication
             {
                 if (model.Password != model.ConfirmPassword)
                 {
-                    ModelState.AddModelError(string.Empty, "Passwords do not match");
+                    ModelState.AddModelError(string.Empty, "Паролите не съвпадат");
                     return View(model);
                 }
 
@@ -151,7 +151,7 @@ namespace FinalProject.Web.Controllers.Authentication
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError(string.Empty, result.Message ?? "Failed to register user");
+                ModelState.AddModelError(string.Empty, result.Message ?? "Неуспешна регистрация");
             }
 
             return View(model);
