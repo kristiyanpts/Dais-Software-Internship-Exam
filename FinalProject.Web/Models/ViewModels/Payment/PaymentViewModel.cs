@@ -3,7 +3,7 @@ namespace FinalProject.Web.Models.ViewModels.Payment
     public enum PaymentStatus
     {
         PENDING,
-        COMPLETED,
+        PROCESSED,
         CANCELLED
     }
 

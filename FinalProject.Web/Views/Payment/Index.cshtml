@@ -202,7 +202,7 @@
         return status switch
         {
             FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PENDING => "bg-warning",
-            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.COMPLETED => "bg-success",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PROCESSED => "bg-success",
             FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.CANCELLED => "bg-danger",
             _ => "bg-secondary"
         };
@@ -213,7 +213,7 @@
         return status switch
         {
             FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PENDING => "fas fa-clock",
-            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.COMPLETED => "fas fa-check-circle",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PROCESSED => "fas fa-check-circle",
             FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.CANCELLED => "fas fa-times-circle",
             _ => "fas fa-question-circle"
         };
@@ -224,7 +224,7 @@
         return status switch
         {
             FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PENDING => "Чакащо",
-            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.COMPLETED => "Завършено",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PROCESSED => "Завършено",
             FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.CANCELLED => "Неуспешно",
             _ => "Неизвестен"
         };
