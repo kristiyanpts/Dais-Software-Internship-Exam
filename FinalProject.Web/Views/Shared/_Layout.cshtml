@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - N/A (Change this)</title>
+    <title>@ViewData["Title"] - Online Payment System</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -18,7 +18,7 @@
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
                     <i class="fas fa-rocket me-2"></i>
-                    <span class="fw-bold">N/A (Change this)</span>
+                    <span class="fw-bold">Online Payment System</span>
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -29,16 +29,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "TBD" ? "active" : "")"
-                                asp-area="" asp-controller="TBD" asp-action="Index">
+                            <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
+                                asp-area="" asp-controller="Home" asp-action="Index">
                                 <i class="fas fa-home me-1"></i>Home
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "TBD" ? "active" : "")"
-                                asp-area="" asp-controller="TBD" asp-action="Index">
-                                <i class="fas fa-tasks me-1"></i>Features
+                            <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payment" ? "active" : "")"
+                                asp-area="" asp-controller="Payment" asp-action="Index">
+                                <i class="fas fa-tasks me-1"></i>Payments
                             </a>
                         </li>
                     </ul>
@@ -94,7 +94,7 @@
                 <div class="col-md-6 text-center text-md-start">
                     <span>
                         <i class="fas fa-rocket me-1"></i>
-                        &copy; @DateTime.Now.Year N/A (Change this). All rights reserved.
+                        &copy; @DateTime.Now.Year Online Payment System. All rights reserved.
                     </span>
                 </div>
                 <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">

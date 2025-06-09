@@ -21,17 +21,17 @@ namespace FinalProject.Services.Implementations.Authentication
 
         public async Task<LoginResponse> Login(LoginRequest request)
         {
-            if (string.IsNullOrEmpty(request.Data.Email) || string.IsNullOrEmpty(request.Data.Password))
+            if (string.IsNullOrEmpty(request.Data.Username) || string.IsNullOrEmpty(request.Data.Password))
             {
                 return new LoginResponse()
                 {
                     Status = false,
-                    Message = "Email and password are required!"
+                    Message = "Невалидно потребителско име или парола!"
                 };
             }
 
             var queryParameters = new QueryParameters();
-            queryParameters.AddWhere("email", request.Data.Email);
+            queryParameters.AddWhere("username", request.Data.Username);
 
             var user = await _userRepository.RetrieveAll(queryParameters).SingleOrDefaultAsync();
             var passwordHash = SecurityHelper.HashPassword(request.Data.Password);
@@ -41,18 +41,18 @@ namespace FinalProject.Services.Implementations.Authentication
                 return new LoginResponse()
                 {
                     Status = false,
-                    Message = "Invalid email or password!"
+                    Message = "Невалидно потребителско име или парола!"
                 };
             }
 
             try
             {
-                var userResponse = await MapUserToUserResponseDto(user);
+                var userResponse = MapUserToUserResponseDto(user);
 
                 return new LoginResponse()
                 {
                     Status = true,
-                    Message = "Login successful!",
+                    Message = "Входът е успешен!",
                     Data = userResponse
                 };
             }
@@ -68,17 +68,17 @@ namespace FinalProject.Services.Implementations.Authentication
 
         public async Task<RegisterResponse> Register(RegisterRequest request)
         {
-            if (string.IsNullOrEmpty(request.Data.Email) || string.IsNullOrEmpty(request.Data.Password) || string.IsNullOrEmpty(request.Data.FullName) || string.IsNullOrEmpty(request.Data.ConfirmPassword))
+            if (string.IsNullOrEmpty(request.Data.Username) || string.IsNullOrEmpty(request.Data.Password) || string.IsNullOrEmpty(request.Data.FullName) || string.IsNullOrEmpty(request.Data.ConfirmPassword))
             {
                 return new RegisterResponse()
                 {
                     Status = false,
-                    Message = "All fields are required!"
+                    Message = "Всички полета са задължителни!"
                 };
             }
 
             var queryParameters = new QueryParameters();
-            queryParameters.AddWhere("email", request.Data.Email);
+            queryParameters.AddWhere("username", request.Data.Username);
 
             var existingUser = await _userRepository.RetrieveAll(queryParameters).SingleOrDefaultAsync();
             if (existingUser != null)
@@ -86,13 +86,13 @@ namespace FinalProject.Services.Implementations.Authentication
                 return new RegisterResponse()
                 {
                     Status = false,
-                    Message = "User with this email already exists!"
+                    Message = "Потребител с това потребителско име вече съществува!"
                 };
             }
 
             var user = new Models.User()
             {
-                Email = request.Data.Email,
+                Username = request.Data.Username,
                 Password = SecurityHelper.HashPassword(request.Data.Password),
                 FullName = request.Data.FullName,
             };
@@ -103,11 +103,13 @@ namespace FinalProject.Services.Implementations.Authentication
 
                 user.Id = id;
 
+                var userResponse = MapUserToUserResponseDto(user);
+
                 return new RegisterResponse()
                 {
                     Status = true,
-                    Message = "User registered successfully!",
-                    Data = await MapUserToUserResponseDto(user)
+                    Message = "Потребителят е регистриран успешно!",
+                    Data = userResponse
                 };
             }
             catch (Exception ex)
@@ -120,13 +122,12 @@ namespace FinalProject.Services.Implementations.Authentication
             }
         }
 
-        // TODO: Change to non-async method, if no fields are needed to be mapped.
-        private async Task<UserResponseDto> MapUserToUserResponseDto(Models.User user)
+        private UserResponseDto MapUserToUserResponseDto(Models.User user)
         {
             return new UserResponseDto()
             {
                 Id = user.Id,
-                Email = user.Email,
+                Username = user.Username,
                 FullName = user.FullName,
             };
         }

@@ -15,14 +15,14 @@ namespace FinalProject.Repository.Implementations.User
         private const string _idField = "id";
         protected override string GetTableName() => "users";
 
-        protected override IEnumerable<string> GetColumns() => new[] { _idField, "email", "password", "full_name" };
+        protected override IEnumerable<string> GetColumns() => new[] { _idField, "username", "password", "full_name" };
 
         protected override Models.User MapReaderToEntity(SqlDataReader reader)
         {
             return new Models.User
             {
                 Id = Convert.ToInt32(reader[_idField]),
-                Email = Convert.ToString(reader["email"]),
+                Username = Convert.ToString(reader["username"]),
                 Password = Convert.ToString(reader["password"]),
                 FullName = Convert.ToString(reader["full_name"]),
             };
@@ -33,7 +33,7 @@ namespace FinalProject.Repository.Implementations.User
             return new Dictionary<string, string>
             {
                 { "Id", _idField },
-                { "Email", "email" },
+                { "Username", "username" },
                 { "Password", "password" },
                 { "FullName", "full_name" },
             };

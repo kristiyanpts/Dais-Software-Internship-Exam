@@ -56,19 +56,19 @@ namespace FinalProject.Web.Controllers.Authentication
                 {
                     Data = new LoginRequestDto()
                     {
-                        Email = model.Email,
+                        Username = model.Username,
                         Password = model.Password
                     }
                 };
 
                 var result = await _authenticationService.Login(loginRequest);
-                
+
                 if (result.Status == true && result.Data != null)
                 {
                     var user = new UserViewModel()
                     {
                         Id = result.Data.Id,
-                        Email = result.Data.Email,
+                        Username = result.Data.Username,
                         FullName = result.Data.FullName
                     };
 
@@ -123,7 +123,7 @@ namespace FinalProject.Web.Controllers.Authentication
                 {
                     Data = new RegisterRequestDto()
                     {
-                        Email = model.Email,
+                        Username = model.Username,
                         Password = model.Password,
                         FullName = model.FullName,
                         ConfirmPassword = model.ConfirmPassword
@@ -137,7 +137,7 @@ namespace FinalProject.Web.Controllers.Authentication
                     var user = new UserViewModel()
                     {
                         Id = result.Data.Id,
-                        Email = result.Data.Email,
+                        Username = result.Data.Username,
                         FullName = result.Data.FullName
                     };
 
@@ -179,7 +179,7 @@ namespace FinalProject.Web.Controllers.Authentication
         protected void SetUserSession(UserViewModel user)
         {
             HttpContext.Session.SetInt32("UserId", user.Id);
-            HttpContext.Session.SetString("Email", user.Email);
+            HttpContext.Session.SetString("Username", user.Username);
             HttpContext.Session.SetString("FullName", user.FullName);
         }
     }

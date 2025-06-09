@@ -1,0 +1,331 @@
+@model FinalProject.Web.Models.ViewModels.Payment.Index.IndexPaymentViewModel
+@{
+    ViewData["Title"] = "Payments";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-soft border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="text-gradient mb-2">Payment History</h1>
+                            <p class="lead text-muted mb-0">View and manage your payment transactions</p>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <a href="@Url.Action("Create", "Payment")" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>
+                                New Payment
+                            </a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-primary" id="sortByDate">
+                                    <i class="fas fa-clock me-2"></i>
+                                    Sort by Date
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" id="sortByStatus">
+                                    <i class="fas fa-sort me-2"></i>
+                                    Sort by Status
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!Model.Payments.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
+                            <h3 class="text-muted">No Payments Found</h3>
+                            <p class="text-muted">You haven't made any payments yet.</p>
+                            <a href="@Url.Action("Create", "Payment")" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus me-2"></i>
+                                Make Your First Payment
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="paymentsContainer" class="row g-4">
+                            @foreach (var payment in Model.Payments)
+                            {
+                                <div class="col-md-6 col-lg-4 payment-card">
+                                    <div class="card h-100 border-0 shadow-soft">
+                                        <div class="card-header bg-gradient border-0 p-0">
+                                            <div class="payment-header">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="payment-status">
+                                                        <span class="badge @GetStatusBadgeClass(payment.Status) px-3 py-2">
+                                                            <i class="@GetStatusIcon(payment.Status) me-1"></i>
+                                                            @payment.Status
+                                                        </span>
+                                                    </div>
+                                                    <div class="payment-info">
+                                                        <div class="payment-amount">
+                                                            <span class="currency">@payment.Amount.ToString("C2")</span>
+                                                        </div>
+                                                        <div class="payment-date">
+                                                            <i class="far fa-calendar-alt me-1"></i>
+                                                            @payment.CreatedAt.ToString("dd.MM.yyyy")
+                                                            <i class="far fa-clock ms-2 me-1"></i>
+                                                            @payment.CreatedAt.ToString("HH:mm")
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex flex-column gap-3">
+                                                <div class="payment-description">
+                                                    <i class="fas fa-file-alt text-muted me-2"></i>
+                                                    <span>@payment.Description</span>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-shrink-0">
+                                                        <div class="account-icon bg-primary bg-opacity-10 rounded-circle p-2">
+                                                            <i class="fas fa-university text-primary"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <div class="text-muted small">From Account</div>
+                                                        <div class="fw-bold">@payment.FromAccountNumber</div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-shrink-0">
+                                                        <div class="account-icon bg-success bg-opacity-10 rounded-circle p-2">
+                                                            <i class="fas fa-university text-success"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <div class="text-muted small">To Account</div>
+                                                        <div class="fw-bold">@payment.ToAccountNumber</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if (payment.Status == FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PENDING)
+                                        {
+                                            <div class="card-footer bg-transparent border-0 pb-4">
+                                                <div class="d-grid gap-2">
+                                                    <form asp-action="ProcessPayment" asp-controller="Payment"
+                                                        asp-route-id="@payment.Id" method="post">
+                                                        <input type="hidden" name="paymentId" value="@payment.Id" />
+
+                                                        <button class="btn btn-success" type="submit">
+                                                            <i class="fas fa-check me-2"></i>
+                                                            Process Payment
+                                                        </button>
+                                                    </form>
+
+                                                    <form asp-action="CancelPayment" asp-controller="Payment"
+                                                        asp-route-id="@payment.Id" method="post">
+                                                        <input type="hidden" name="paymentId" value="@payment.Id" />
+
+                                                        <button class="btn btn-outline-danger" type="submit">
+                                                            <i class="fas fa-times me-2"></i>
+                                                            Cancel Payment
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentSort = 'date'; // Default sort
+
+        function sortPayments(sortBy) {
+            const container = document.getElementById('paymentsContainer');
+            const cards = Array.from(container.getElementsByClassName('payment-card'));
+
+            cards.sort((a, b) => {
+                if (sortBy === 'date') {
+                    const dateA = new Date(a.querySelector('.payment-date').textContent);
+                    const dateB = new Date(b.querySelector('.payment-date').textContent);
+                    return dateB - dateA; // Newest first
+                } else {
+                    const statusA = a.querySelector('.badge').textContent.trim();
+                    const statusB = b.querySelector('.badge').textContent.trim();
+
+                    if (statusA === 'PENDING' && statusB !== 'PENDING') return -1;
+                    if (statusA !== 'PENDING' && statusB === 'PENDING') return 1;
+
+                    // If both are PENDING or both are not PENDING, sort by date
+                    const dateA = new Date(a.querySelector('.payment-date').textContent);
+                    const dateB = new Date(b.querySelector('.payment-date').textContent);
+                    return dateB - dateA;
+                }
+            });
+
+            // Clear and re-append sorted cards
+            container.innerHTML = '';
+            cards.forEach(card => container.appendChild(card));
+        }
+
+        document.getElementById('sortByDate').addEventListener('click', () => {
+            currentSort = 'date';
+            sortPayments('date');
+            updateActiveButton('sortByDate');
+        });
+
+        document.getElementById('sortByStatus').addEventListener('click', () => {
+            currentSort = 'status';
+            sortPayments('status');
+            updateActiveButton('sortByStatus');
+        });
+
+        function updateActiveButton(activeId) {
+            document.querySelectorAll('.btn-group .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(activeId).classList.add('active');
+        }
+
+        // Initial sort
+        sortPayments(currentSort);
+        updateActiveButton('sortByDate');
+    </script>
+}
+
+@functions {
+    private string GetStatusBadgeClass(FinalProject.Web.Models.ViewModels.Payment.PaymentStatus status)
+    {
+        return status switch
+        {
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PENDING => "bg-warning",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.COMPLETED => "bg-success",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.CANCELLED => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusIcon(FinalProject.Web.Models.ViewModels.Payment.PaymentStatus status)
+    {
+        return status switch
+        {
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.PENDING => "fas fa-clock",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.COMPLETED => "fas fa-check-circle",
+            FinalProject.Web.Models.ViewModels.Payment.PaymentStatus.CANCELLED => "fas fa-times-circle",
+            _ => "fas fa-question-circle"
+        };
+    }
+}
+
+<style>
+    .account-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .payment-card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .payment-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card {
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    .payment-card:hover .card {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .badge {
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    .btn-outline-danger {
+        border-width: 2px;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: var(--danger-color);
+        border-color: var(--danger-color);
+    }
+
+    .payment-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 1.5rem;
+        border-radius: 12px 12px 0 0;
+        color: white;
+    }
+
+    .payment-status {
+        margin-bottom: 0;
+    }
+
+    .payment-info {
+        text-align: right;
+    }
+
+    .payment-amount {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .payment-amount .currency {
+        font-size: 1.5rem;
+        vertical-align: top;
+        margin-right: 2px;
+    }
+
+    .payment-amount .cents {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .payment-date {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    .payment-description {
+        background-color: var(--background-light);
+        padding: 0.75rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        box-shadow: 0 4px 15px rgba(41, 98, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(41, 98, 255, 0.3);
+    }
+
+    .bg-gradient {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+</style>

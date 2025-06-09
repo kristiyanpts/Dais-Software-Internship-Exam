@@ -1,0 +1,241 @@
+@model FinalProject.Web.Models.ViewModels.Payment.Create.CreatePaymentViewModel
+@{
+    ViewData["Title"] = "Create Payment";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-soft border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="text-gradient mb-2">Create New Payment</h1>
+                            <p class="lead text-muted mb-0">Select an account and enter payment details</p>
+                        </div>
+                        <a href="@Url.Action("Index", "Payment")" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Payments
+                        </a>
+                    </div>
+
+                    @if (Model.Accounts.Count == 0)
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No accounts found. Please contact support.
+                        </div>
+                    }
+                    else
+                    {
+                        <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                            <div class="row g-4">
+                                <!-- From Account Selection -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Select Your Account</label>
+                                    <div class="row g-3">
+                                        @foreach (var account in Model.Accounts)
+                                        {
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="account-card">
+                                            <input type="radio" class="btn-check" name="FromAccountNumber"
+                                                id="account_@account.AccountNumber" value="@account.AccountNumber"
+                                                required @(account.AccountNumber == Model.FromAccountNumber ? "checked"
+                                                                                                : "")>
+
+                                            <label class="btn btn-outline-primary w-100 h-100 text-start p-3"
+                                                for="account_@account.AccountNumber">
+                                                <div class="d-flex align-items-center">
+                                                    <div
+                                                        class="account-icon bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                                        <i class="fas fa-university text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">@account.AccountNumber</div>
+                                                        <div class="text-muted small">Balance:
+                                                            @account.Balance.ToString("C2")</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                                                        }
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please select an account to send money from.
+                                    </div>
+                                </div>
+
+                                <!-- To Account -->
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="ToAccountNumber" name="ToAccountNumber"
+                                            placeholder="Enter recipient account number" required
+                                            pattern="[A-Z]{2}[0-9]{20}" value="@Model.ToAccountNumber" maxlength="22">
+                                        <label for="ToAccountNumber">Recipient Account Number</label>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid account number (e.g., BG12345678901234567890).
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Amount -->
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="Amount" name="Amount"
+                                            placeholder="Enter amount" value="@Model.Amount" required min="0.01"
+                                            step="0.01">
+                                        <label for="Amount">Amount</label>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid amount greater than 0.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" id="Description" name="Description"
+                                            placeholder="Enter payment description" required style="height: 100px"
+                                            value="@Model.Description" maxlength="32"></textarea>
+                                        <label for="Description">Payment Description</label>
+                                        <div class="invalid-feedback">
+                                            Please enter a payment description.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-danger mb-4">
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <div class="alert alert-danger d-flex align-items-center py-3 px-4 mb-2 border-0"
+                                            role="alert" style="background-color: rgba(220, 53, 69, 0.1);">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-exclamation-circle text-danger me-3"
+                                                    style="font-size: 1.25rem;"></i>
+                                                <span class="text-danger">
+                                                    @error.ErrorMessage
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        Send Payment
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+        <script>
+            // Form validation
+            (function () {
+                'use strict'
+                var forms = document.querySelectorAll('.needs-validation')
+                Array.prototype.slice.call(forms).forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+            })()
+
+            // Account number format validation
+            document.getElementById('ToAccountNumber').addEventListener('input', function (e) {
+                let value = e.target.value.toUpperCase();
+                // Remove any non-alphanumeric characters
+                value = value.replace(/[^A-Z0-9]/g, '');
+                // Ensure first two characters are letters
+                if (value.length > 2) {
+                    if (!/^[A-Z]{2}/.test(value)) {
+                        value = 'BG' + value.substring(2);
+                    }
+                }
+                e.target.value = value;
+            });
+        </script>
+}
+
+    <style>
+        .account-card {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .account-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-check:checked+.btn-outline-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 15px rgba(41, 98, 255, 0.2);
+        }
+
+        .btn-check:checked+.btn-outline-primary .text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .btn-check:checked+.btn-outline-primary .account-icon {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .btn-check:checked+.btn-outline-primary .account-icon i {
+            color: white !important;
+        }
+
+        .btn-outline-primary {
+            border-width: 2px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-outline-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(41, 98, 255, 0.1);
+        }
+
+        .form-floating>.form-control {
+            padding: 1rem 0.75rem;
+        }
+
+        .form-floating>label {
+            padding: 1rem 0.75rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(41, 98, 255, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            box-shadow: 0 4px 15px rgba(41, 98, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(41, 98, 255, 0.3);
+        }
+
+        .account-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>

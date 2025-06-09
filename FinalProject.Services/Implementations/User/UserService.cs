@@ -1,8 +1,8 @@
 using FinalProject.Repository.Helpers;
 using FinalProject.Repository.Interfaces.User;
-using FinalProject.Services.DTOs.Requests.User.GetUserByEmail;
+using FinalProject.Services.DTOs.Requests.User.GetUserByUsername;
 using FinalProject.Services.DTOs.Responses.User;
-using FinalProject.Services.DTOs.Responses.User.GetUserByEmail;
+using FinalProject.Services.DTOs.Responses.User.GetUserByUsername;
 using FinalProject.Services.Interfaces.User;
 
 namespace FinalProject.Services.Implementations.User
@@ -16,55 +16,54 @@ namespace FinalProject.Services.Implementations.User
             _userRepository = userRepository;
         }
 
-        // TODO: Currently not used. If it won't be used, remove it, and if there aren't any methods left, remove the service.
-        public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest request)
+        public async Task<GetUserByUsernameResponse> GetUserByUsername(GetUserByUsernameRequest request)
         {
             if (request == null)
             {
-                return new GetUserByEmailResponse()
+                return new GetUserByUsernameResponse()
                 {
                     Status = false,
-                    Message = "Request is null!"
+                    Message = "Заявката е невалидна!"
                 };
             }
 
             if (request.Data == null)
             {
-                return new GetUserByEmailResponse()
+                return new GetUserByUsernameResponse()
                 {
                     Status = false,
-                    Message = "Data is null!"
+                    Message = "Данните са невалидни!"
                 };
             }
 
             try
             {
                 var queryParameters = new QueryParameters();
-                queryParameters.AddWhere("email", request.Data.Email);
+                queryParameters.AddWhere("username", request.Data.Username);
 
                 var user = await _userRepository.RetrieveAll(queryParameters).SingleOrDefaultAsync();
 
                 if (user == null)
                 {
-                    return new GetUserByEmailResponse()
+                    return new GetUserByUsernameResponse()
                     {
                         Status = false,
-                        Message = "User not found!"
+                        Message = "Потребителят не е намерен!"
                     };
                 }
 
-                var userResponse = await MapUserToUserResponseDto(user);
+                var userResponse = MapUserToUserResponseDto(user);
 
-                return new GetUserByEmailResponse()
+                return new GetUserByUsernameResponse()
                 {
                     Status = true,
-                    Message = "User retrieved successfully!",
+                    Message = "Потребителят е намерен успешно!",
                     Data = userResponse
                 };
             }
             catch (Exception ex)
             {
-                return new GetUserByEmailResponse()
+                return new GetUserByUsernameResponse()
                 {
                     Status = false,
                     Message = ex.Message
@@ -72,13 +71,12 @@ namespace FinalProject.Services.Implementations.User
             }
         }
 
-        // TODO: Change to non-async method, if no fields are needed to be mapped.
-        private async Task<UserResponseDto> MapUserToUserResponseDto(Models.User user)
+        private UserResponseDto MapUserToUserResponseDto(Models.User user)
         {
             return new UserResponseDto()
             {
                 Id = user.Id,
-                Email = user.Email,
+                Username = user.Username,
                 FullName = user.FullName,
             };
         }

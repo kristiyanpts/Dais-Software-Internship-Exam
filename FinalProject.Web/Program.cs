@@ -1,10 +1,20 @@
 using FinalProject.Repository;
+using FinalProject.Repository.Implementations.Account;
+using FinalProject.Repository.Implementations.Payment;
 using FinalProject.Repository.Implementations.User;
+using FinalProject.Repository.Implementations.UserAccount;
+using FinalProject.Repository.Interfaces.Account;
+using FinalProject.Repository.Interfaces.Payment;
 using FinalProject.Repository.Interfaces.User;
+using FinalProject.Repository.Interfaces.UserAccount;
 using FinalProject.Services.Implementations.Authentication;
+using FinalProject.Services.Implementations.Payment;
 using FinalProject.Services.Implementations.User;
+using FinalProject.Services.Implementations.UserAccount;
 using FinalProject.Services.Interfaces.Authentication;
+using FinalProject.Services.Interfaces.Payment;
 using FinalProject.Services.Interfaces.User;
+using FinalProject.Services.Interfaces.UserAccount;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +26,15 @@ builder.Services.AddSingleton<ConnectionFactory>();
 
 // Add repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IUserAccountService, UserAccountService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 builder.Services.AddRouting(options =>
 {

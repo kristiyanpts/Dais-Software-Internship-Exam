@@ -17,9 +17,9 @@
 
                     <form asp-controller="Authentication" asp-action="Login" method="post">
                         <div class="form-floating mb-4">
-                            <input asp-for="Email" type="text" class="form-control" id="email"
-                                placeholder="name@example.com" asp-for="Email" value="@Model.Email">
-                            <label asp-for="Email">Email</label>
+                            <input asp-for="Username" type="text" class="form-control" id="username"
+                                placeholder="Username" asp-for="Username" value="@Model.Username">
+                            <label asp-for="Username">Username</label>
                         </div>
 
                         <div class="form-floating mb-4">
@@ -33,16 +33,16 @@
                         <div class="text-danger mb-4">
                             @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                             {
-                                    <div class="alert alert-danger py-2 mb-2" role="alert">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                            <path fill="currentColor" fill-rule="evenodd"
-                                                d="M5.312 10.762C8.23 5.587 9.689 3 12 3s3.77 2.587 6.688 7.762l.364.644c2.425 4.3 3.638 6.45 2.542 8.022S17.786 21 12.364 21h-.728c-5.422 0-8.134 0-9.23-1.572s.117-3.722 2.542-8.022zM12 7.25a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0V8a.75.75 0 0 1 .75-.75M12 17a1 1 0 1 0 0-2a1 1 0 0 0 0 2"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <span class="ms-2">
-                                            @error.ErrorMessage
-                                        </span>
-                                    </div>
+                                <div class="alert alert-danger py-2 mb-2" role="alert">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor" fill-rule="evenodd"
+                                            d="M5.312 10.762C8.23 5.587 9.689 3 12 3s3.77 2.587 6.688 7.762l.364.644c2.425 4.3 3.638 6.45 2.542 8.022S17.786 21 12.364 21h-.728c-5.422 0-8.134 0-9.23-1.572s.117-3.722 2.542-8.022zM12 7.25a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0V8a.75.75 0 0 1 .75-.75M12 17a1 1 0 1 0 0-2a1 1 0 0 0 0 2"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="ms-2">
+                                        @error.ErrorMessage
+                                    </span>
+                                </div>
                             }
                         </div>
 

@@ -1,11 +1,10 @@
-using FinalProject.Services.DTOs.Requests.User.GetUserByEmail;
-using FinalProject.Services.DTOs.Responses.User.GetUserByEmail;
+using FinalProject.Services.DTOs.Requests.User.GetUserByUsername;
+using FinalProject.Services.DTOs.Responses.User.GetUserByUsername;
 
 namespace FinalProject.Services.Interfaces.User
 {
     public interface IUserService
     {
-        Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest request);
-        //Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request);
+        Task<GetUserByUsernameResponse> GetUserByUsername(GetUserByUsernameRequest request);
     }
 }
